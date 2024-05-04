@@ -2,6 +2,7 @@
 use std::fs::File;
 use git2::Repository;
 use csv::ReaderBuilder;
+use std::fmt;
 
 pub struct Embedding {
     pub vector: Vec<f64>,
@@ -39,4 +40,18 @@ pub fn load_embeddings_from_csv(filename: &str) -> Vec<Embedding> {
     }
 
     embeddings
+}
+
+impl fmt::Debug for Embedding {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Implement the formatting logic here
+        // For example:
+        write!(f, "Embedding {{ vector: {:?} }}", self.vector)
+    }
+}
+
+fn main() {
+    // Example usage of load_embeddings_from_csv function
+    let embeddings = load_embeddings_from_csv("example.csv");
+    println!("{:?}", embeddings);
 }
