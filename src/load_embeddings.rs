@@ -9,7 +9,7 @@ pub struct Embedding {
 }
 
 pub fn load_embeddings_from_csv(filename: &str) -> Vec<Embedding> {
-    // Open the CSV file using Git LFS
+    // open the .csv file using Git LFS
     let repo = match Repository::open(".") {
         Ok(repo) => repo,
         Err(e) => panic!("failed to open: {}", e),
@@ -25,14 +25,14 @@ pub fn load_embeddings_from_csv(filename: &str) -> Vec<Embedding> {
         Err(e) => panic!("failed to open file: {}", e),
     };
 
-    // Create a CSV reader
+    // create a .csv reader
     let mut reader = ReaderBuilder::new().from_reader(file);
 
-    // Read the CSV records and parse embeddings
+    // read the .csv records and parse embeddings
     let mut embeddings = Vec::new();
     for result in reader.records() {
         let record = result.expect("error reading CSV record");
-        // Assuming each record represents an embedding with space-separated values
+        // assuming each record represents an embedding with space-separated values
         let embedding: Embedding = Embedding {
             vector: record.iter().map(|v| v.parse().expect("error parsing embedding")).collect(),
         };
@@ -51,7 +51,7 @@ impl fmt::Debug for Embedding {
 }
 
 fn main() {
-    // Example usage of load_embeddings_from_csv function
+    // example usage of load_embeddings_from_csv function
     let embeddings = load_embeddings_from_csv("example.csv");
     println!("{:?}", embeddings);
 }

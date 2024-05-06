@@ -10,7 +10,7 @@ pub fn calculate_average_distance(graph: &UnGraph<usize, ()>) -> Option<f64> {
         let distances = dijkstra(&graph, node, None, |_| 1);
         for (_, distance) in distances {
             if let Some(d) = distance {
-                total_distance += d as i32; // Convert distance to usize or the appropriate integer type
+                total_distance += d;
                 total_pairs += 1;
             }
         }
@@ -59,4 +59,42 @@ pub fn calculate_betweenness_centrality(graph: &UnGraph<usize, ()>) -> Vec<f64> 
     // Normalize betweenness centrality scores
     let normalization_factor = (n - 1) * (n - 2) / 2;
     betweenness.iter_mut().map(|x| *x / normalization_factor as f64).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use petgraph::graph::{UnGraph, NodeIndex};
+    
+    #[test]
+    fn test_calculate_average_distance() {
+        // Create a test graph with a large number of nodes
+        let mut graph = UnGraph::<usize, ()>::new_undirected();
+        let nodes: Vec<_> = (0..1000).map(|_| graph.add_node(0)).collect();
+        // Add edges to the graph (you might need to design a specific structure of edges based on your requirements)
+        for i in 0..nodes.len() - 1 {
+            graph.add_edge(nodes[i], nodes[i + 1], ());
+        }
+
+        // Calculate the average distance
+        let average_distance = calculate_average_distance(&graph);
+        // Assert the result based on your expectations
+        // assert_eq!(average_distance, Some(expected_value));
+    }
+
+    #[test]
+    fn test_calculate_betweenness_centrality() {
+        // Create a test graph with a large number of nodes
+        let mut graph = UnGraph::<usize, ()>::new_undirected();
+        let nodes: Vec<_> = (0..1000).map(|_| graph.add_node(0)).collect();
+        // Add edges to the graph (you might need to design a specific structure of edges based on your requirements)
+        for i in 0..nodes.len() - 1 {
+            graph.add_edge(nodes[i], nodes[i + 1], ());
+        }
+
+        // Calculate the betweenness centrality
+        let betweenness_centrality = calculate_betweenness_centrality(&graph);
+        // Assert the result based on your expectations
+        // assert_eq!(betweenness_centrality, expected_values);
+    }
 }

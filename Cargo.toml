@@ -9,11 +9,5 @@ edition = "2021"
 git2 = "0.18.3"
 csv = "1.3"
 petgraph = "0.6.4"
-
-[[bin]]
-name = "load_embeddings"
-path = "src/load_embeddings.rs"
-
-[[bin]]
-name = "calculate_metrics"
-path = "src/calculate_metrics.rs"
+rand = "0.8.5"
+rand_pcg = "0.3.1"
