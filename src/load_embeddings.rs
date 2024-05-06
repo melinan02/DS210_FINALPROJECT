@@ -44,8 +44,7 @@ pub fn load_embeddings_from_csv(filename: &str) -> Vec<Embedding> {
 
 impl fmt::Debug for Embedding {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Implement the formatting logic here
-        // For example:
+        // implement the formatting logic here
         write!(f, "Embedding {{ vector: {:?} }}", self.vector)
     }
 }

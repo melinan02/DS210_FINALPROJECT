@@ -10,25 +10,16 @@ pub fn construct_graph(user_embeddings: &[Embedding], subreddit_embeddings: &[Em
     // add nodes to the graph for subreddits
     let subreddit_nodes: Vec<_> = subreddit_embeddings.iter().map(|_| graph.add_node(0)).collect();
 
-    // add edges between user and subreddit nodes based on embeddings (e.g., using similarity)
-    for (user_idx, user_embedding) in user_embeddings.iter().enumerate() {
-        for (subreddit_idx, subreddit_embedding) in subreddit_embeddings.iter().enumerate() {
-            // calculate similarity between user and subreddit embeddings
-            let similarity = calculate_similarity(&user_embedding.vector, &subreddit_embedding.vector);
-            // add edge if similarity meets certain criteria
-            if similarity > 0.5 {
+    // add edges between user and subreddit nodes based on a criterion
+    for (user_idx, _) in user_embeddings.iter().enumerate() {
+        for (subreddit_idx, _) in subreddit_embeddings.iter().enumerate() {
+            // add edge if a certain condition is met
+            // For example, if you want to add an edge between user and subreddit if their indices match:
+            if user_idx == subreddit_idx {
                 graph.add_edge(user_nodes[user_idx], subreddit_nodes[subreddit_idx], ());
             }
         }
     }
 
     graph
-}
-
-fn calculate_similarity(embedding1: &[f64], embedding2: &[f64]) -> f64 {
-    // for demonstration, let's calculate cosine similarity
-    let dot_product = embedding1.iter().zip(embedding2.iter()).map(|(a, b)| a * b).sum::<f64>();
-    let norm1 = embedding1.iter().map(|x| x * x).sum::<f64>().sqrt();
-    let norm2 = embedding2.iter().map(|x| x * x).sum::<f64>().sqrt();
-    dot_product / (norm1 * norm2)
 }

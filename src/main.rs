@@ -15,8 +15,11 @@ fn main() {
     let graph = construct_graph(&user_embeddings, &subreddit_embeddings);
 
     // calculate average distance
-    let avg_distance = calculate_average_distance(&graph);
-    println!("Average Distance: {:?}", avg_distance);
+    if let Some(average_distance) = calculate_average_distance(&graph) {
+        println!("Average Distance: {}", average_distance);
+    } else {
+        println!("Unable to calculate average distance.");
+    }
 
     // calculate betweenness centrality
     let betweenness = calculate_betweenness_centrality(&graph);
