@@ -1,42 +1,36 @@
 use petgraph::graph::UnGraph;
-use petgraph::algo::dijkstra;
+// use petgraph::algo::dijkstra;
 use petgraph::stable_graph::NodeIndex;
 
-// define the Embedding struct
-#[derive(Debug)]
-struct Embedding {
-    vector: Vec<f64>,
-}
+// pub fn calculate_average_distance(graph: &UnGraph<usize, ()>) -> Option<f64> {
+//     let n = graph.node_count();
+//     let mut total_distance = 0.0;
+//     let mut total_pairs = 0;
 
-impl Embedding {
-    // constructor method to create Embedding from a vector
-    fn new(vector: Vec<f64>) -> Self {
-        Embedding { vector }
-    }
-}
+//     // perform breadth-first search (BFS) from each node to compute shortest paths
+//     for node in graph.node_indices() {
+//         let distances = dijkstra(&graph, node, None, |_| 1);
 
-pub fn calculate_average_distance(graph: &UnGraph<usize, ()>) -> Option<f64> {
-    let n = graph.node_count();
-    let mut total_distance = 0.0;
-    let mut total_pairs = 0;
+//         for (_, distance) in distances {
+//             match distance {
+//                 Some(d) => {
+//                     total_distance += d;
+//                     total_pairs += 1;
+//                 }
+//                 None => {
+//                     // handle the case where distance is None
+//                     return None;
+//                 }
+//             }
+//         }
+//     }
 
-    // perform breadth-first search (BFS) from each node to compute shortest paths
-    for node in graph.node_indices() {
-        let distances = dijkstra(&graph, node, None, |_| 1);
-        for (_, distance) in distances {
-            if let Some(d) = distance {
-                total_distance += d as f64;
-                total_pairs += 1;
-            }
-        }
-    }
-
-    if total_pairs > 0 {
-        Some(total_distance as f64 / total_pairs as f64)
-    } else {
-        None
-    }
-}
+//     if total_pairs > 0 {
+//         Some(total_distance / total_pairs as f64)
+//     } else {
+//         None
+//     }
+// }
 
 pub fn calculate_betweenness_centrality(graph: &UnGraph<usize, ()>) -> Vec<f64> {
     let n = graph.node_count();
@@ -55,7 +49,7 @@ pub fn calculate_betweenness_centrality(graph: &UnGraph<usize, ()>) -> Vec<f64> 
                 if !path.contains(&neighbor) {
                     let mut new_path = path.clone();
                     new_path.push(neighbor);
-                    queue.push(new_path);
+                    queue.push(new_path.clone());
                     if neighbor != node {
                         paths.push(new_path);
                     }
@@ -73,20 +67,21 @@ pub fn calculate_betweenness_centrality(graph: &UnGraph<usize, ()>) -> Vec<f64> 
 
     // normalize betweenness centrality scores
     let normalization_factor = (n - 1) * (n - 2) / 2;
-    betweenness.iter_mut().map(|x| *x / normalization_factor as f64).collect()
-}
+    let normalized_betweenness: Vec<f64> = betweenness.iter().map(|x| *x / normalization_factor as f64).collect();
 
-fn calculate_similarity(embedding1: &[f64], embedding2: &[f64]) -> f64 {
-    // implement cosine similarity
-    let dot_product = embedding1.iter().zip(embedding2.iter()).map(|(a, b)| a * b).sum::<f64>();
-    let norm1 = embedding1.iter().map(|x| x * x).sum::<f64>().sqrt();
-    let norm2 = embedding2.iter().map(|x| x * x).sum::<f64>().sqrt();
-    dot_product / (norm1 * norm2)
+    // Print the betweenness centrality scores
+    println!("Betweenness Centrality Scores:");
+    for (index, score) in normalized_betweenness.iter().enumerate() {
+        println!("Node {}: {}", index, score);
+    }
+
+    normalized_betweenness
 }
 
 #[cfg(test)]
 mod tests {
     use petgraph::Graph;
+    use crate::load_embeddings::Embedding;
 
     use super::*;
 
@@ -105,9 +100,16 @@ mod tests {
         graph.add_edge(nodes[3], nodes[4], 0.0);
         graph.add_edge(nodes[0], nodes[4], 0.0);
 
-        // Calculate the betweenness centrality
-        let betweenness_centrality = calculate_betweenness_centrality(&graph);
-        // Assert the result based on your expectations
-        // assert_eq!(betweenness_centrality, expected_values);
+        // calculate betweenness centrality
+        let betweenness = calculate_betweenness_centrality(&graph);
+
+        // assert the result
+        assert_eq!(betweenness.len(), graph.node_count());
+
+        // expected values for the given graph
+        let expected_betweenness = vec![0.0, 0.0, 3.0, 0.0, 0.0];
+        for node in graph.node_indices() {
+            assert_eq!(betweenness[node.index()], expected_betweenness[node.index()]);
+        }
     }
 }

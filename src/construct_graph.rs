@@ -13,8 +13,7 @@ pub fn construct_graph(user_embeddings: &[Embedding], subreddit_embeddings: &[Em
     // add edges between user and subreddit nodes based on a criterion
     for (user_idx, _) in user_embeddings.iter().enumerate() {
         for (subreddit_idx, _) in subreddit_embeddings.iter().enumerate() {
-            // add edge if a certain condition is met
-            // For example, if you want to add an edge between user and subreddit if their indices match:
+            // add edge between user and subreddit if their indices match
             if user_idx == subreddit_idx {
                 graph.add_edge(user_nodes[user_idx], subreddit_nodes[subreddit_idx], ());
             }

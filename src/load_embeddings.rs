@@ -31,12 +31,21 @@ pub fn load_embeddings_from_csv(filename: &str) -> Vec<Embedding> {
     // read the .csv records and parse embeddings
     let mut embeddings = Vec::new();
     for result in reader.records() {
-        let record = result.expect("error reading CSV record");
-        // assuming each record represents an embedding with space-separated values
-        let embedding: Embedding = Embedding {
-            vector: record.iter().map(|v| v.parse().expect("error parsing embedding")).collect(),
+        let record = match result {
+            Ok(record) => record,
+            Err(err) => {
+                println!("Error reading CSV record: {}", err);
+                continue; // Skip to the next record if there's an error
+            }
         };
-        embeddings.push(embedding);
+
+        // Parse each field of the record as a float
+        let embedding: Vec<f64> = record.iter()
+            .skip(1) // Skip the first column (user or subreddit name)
+            .filter_map(|v| v.parse().ok()) // Parse each field as f64, filter out errors
+            .collect();
+
+        embeddings.push(Embedding { vector: embedding });
     }
 
     embeddings
@@ -47,10 +56,4 @@ impl fmt::Debug for Embedding {
         // implement the formatting logic here
         write!(f, "Embedding {{ vector: {:?} }}", self.vector)
     }
-}
-
-fn main() {
-    // example usage of load_embeddings_from_csv function
-    let embeddings = load_embeddings_from_csv("example.csv");
-    println!("{:?}", embeddings);
 }
