@@ -9,6 +9,7 @@ be unpredictable.
 The data is linked here: https://snap.stanford.edu/data/web-RedditEmbeddings.html and is also uploaded to this repository.
 
 Sources used:
+
 https://snap.stanford.edu/data/web-RedditEmbeddings.html
 
 https://users.rust-lang.org/t/exploring-rust-developing-a-custom-graph/57785
